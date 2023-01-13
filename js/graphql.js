@@ -1,6 +1,9 @@
+import { createHomepage } from "./ui/homepage-layout.js"
+import { createLoader } from "./ui/loader.js"
+
 const Url = "https://learn.01founders.co/api/graphql-engine/v1/graphql"
-const ID = 546
-const Username = "Jasonasante"
+export const ID = 546
+export const Username = "Jasonasante"
 let transactionOffset = 0
 let lvlOffset = 0
 let progressOffset = 0
@@ -24,6 +27,10 @@ let jsProjectNames = [
     "mini-framework", "mini-framework-bomberman-dom"
 ]
 
+// add rust
+// add week four
+// add challenges
+
 let skills = [
     "xp",
     "skill_css",
@@ -43,26 +50,24 @@ let skills = [
 
 
 let allProjectNames = goProjectNames.concat(jsProjectNames)
-let lengthOfProjectNames = goProjectNames.concat(jsProjectNames).length
+let lengthOfProjectNames = allProjectNames.length
 
 let transactionArr = []
 
 let progressArr = []
 
 let levelArr = []
-let piscineGoLevel = []
-let goProjectsLevel = []
-let julyJsLevel = []
-let jsProjectsLevel = []
 
 let resultArr = []
-let totalSkillArr=[]
+let totalSkillArr = []
+
 let totalSkill = {}
 let totalXp = {}
 let totalGrade = {}
+let totalLevel = {}
 
 // this function returns an array of all transactions bar levels
-function getTransactionData(URL) {
+export function getTransactionData(URL) {
     return fetch(URL, {
         method: "POST",
         headers: {
@@ -142,21 +147,23 @@ function getLevels() {
                 return getLevels()
             } else {
                 levelArr = levelArr.sort((a, b) => { return new Date(a.createdAt) - new Date(b.createdAt) })
+                totalLevel["current-level"] = levelArr[levelArr.length - 1]
 
-                piscineGoLevel = levelArr.filter(piscineGoLevel => piscineGoLevel["path"].startsWith('/london/piscine-go/'))
+                totalLevel["piscine-go"] = levelArr.filter(piscineGoLevel => piscineGoLevel["path"].startsWith('/london/piscine-go/'))
                     .sort((a, b) => { return new Date(a.createdAt) - new Date(b.createdAt) })
 
-                goProjectsLevel = levelArr.filter(goProjects => (goProjects["path"].startsWith('/london/div-01/') &&
+                totalLevel["go-projects"] = levelArr.filter(goProjects => (goProjects["path"].startsWith('/london/div-01/') &&
                     goProjectNames.includes(goProjects["object"]["name"]) ||
                     goProjects["path"].startsWith('/london/div-01/check-points/')))
                     .sort((a, b) => { return new Date(a.createdAt) - new Date(b.createdAt) })
 
-                julyJsLevel = levelArr.filter(julyJsLevel => julyJsLevel["path"].startsWith('/london/div-01/piscine-js') &&
+                totalLevel["piscine-js"] = levelArr.filter(julyJsLevel => julyJsLevel["path"].startsWith('/london/div-01/piscine-js') &&
                     new Date(julyJsLevel.createdAt).getTime() >= new Date("2022-07-01T00:00:00Z").getTime())
 
-                jsProjectsLevel = levelArr.filter(jsProjects => (jsProjects["path"].startsWith('/london/div-01/') &&
+                totalLevel["js-projects"] = levelArr.filter(jsProjects => (jsProjects["path"].startsWith('/london/div-01/') &&
                     jsProjectNames.some(name => jsProjects["path"].includes(name))))
                     .sort((a, b) => { return new Date(a.createdAt) - new Date(b.createdAt) })
+
             }
         })
 }
@@ -207,7 +214,6 @@ function getTotalSkills() {
                     total += totalSkill[key]
                 }
                 totalSkill.total = total
-                console.log({totalSkill})
             }
         })
 }
@@ -226,7 +232,7 @@ function getProgressData(Url) {
                             where:{
                                 _and:[
                                     {userId:{_eq:${ID}}},
-                                    {object:{name:{_eq:"${goProjectNames.concat(jsProjectNames)[lengthOfProjectNames - 1]}"}}}
+                                    {object:{name:{_eq:"${allProjectNames[lengthOfProjectNames - 1]}"}}}
                                 ]
                             }
                             ){
@@ -260,6 +266,7 @@ function projectTransactions(transactionArr, progressArr) {
     progressArr.forEach(progress => {
         resultArr.push({ projectName: progress["object"]["name"] })
         let obj = resultArr.find(project => project.projectName === progress["object"]["name"])
+        // console.log( transactionArr.filter(transaction => transaction["object"]["name"] === progress["object"]["name"]))
         transactionArr.filter(transaction => transaction["object"]["name"] === progress["object"]["name"])
             .forEach(transaction => {
                 skills.forEach(skill => {
@@ -292,28 +299,24 @@ function getTotalXpAndGrades(resultArr) {
         }
     })
     totalXp["lifetime-total"] = totalX
-    let projectsOnly = resultArr.filter(project => goProjectNames.concat(jsProjectNames).includes(project.projectName))
+    let projectsOnly = resultArr.filter(project => allProjectNames.includes(project.projectName))
     let orderXp = projectsOnly.sort((a, b) => b.xp - a.xp)
-    console.log({ orderXp })
 
     totalXp["project-total"] = Number(orderXp.reduce((total, num) => total + num.xp, 0).toFixed(2))
     totalXp["avg-project-xp"] = Number((totalXp["project-total"] / orderXp.length).toFixed(2))
     totalXp.max = orderXp[0]
     totalXp.min = orderXp[orderXp.length - 1]
-    totalXp["project-xp"] = orderXp
-    console.log({ totalXp })
+    totalXp["project-xp"] = []
+    orderXp.forEach(project => totalXp["project-xp"].push(project))
 
     let orderGrade = projectsOnly.sort((a, b) => b.grade - a.grade)
-    console.log({ totalG })
     totalGrade["lifetime-total"] = Number(totalG.toFixed(2))
     totalGrade["project-total"] = Number(orderGrade.reduce((total, num) => total + num.grade, 0).toFixed(2))
     totalGrade.max = orderGrade[0]
     totalGrade.min = orderGrade[orderGrade.length - 1]
-    let orderByDate = projectsOnly.sort((a, b) => { return new Date(b[1]) - new Date(a[1]) })
+    // let orderByDate = projectsOnly.sort((a, b) => { return new Date(b[1]) - new Date(a[1]) })
     totalGrade["project-grades"] = []
-
-    totalGrade["project-grades"].push(orderGrade)
-    console.log({ totalGrade })
+    orderGrade.forEach(project => totalGrade["project-grades"].push(project))
 }
 
 // convert object values into percentage
@@ -327,20 +330,33 @@ function getPercentage(object) {
     return percentageValueObj
 }
 
-getTransactionData(Url)
-    .then(response => {
-        console.log({ response })
-        // add loading page here whilst fetching
-        getTotalSkills()
-        getProgressData(Url).then(() => {
-            // console.log(getPercentage(totalSkill))
+window.onload = () => {
+    // createLoader(true)
+    getTransactionData(Url)
+        .then(response => {
+            getTotalSkills()
             getLevels()
-            console.log({ progressArr })
-            getTotalXpAndGrades(projectTransactions(response, progressArr))
-            console.log({ resultArr })
+            return getProgressData(Url).then(() => {
+                // console.log(getPercentage(totalSkill))
+                // console.log({ progressArr })
+                getTotalXpAndGrades(projectTransactions(response, progressArr))
+                // console.log({ resultArr })
+            })
 
+        }).then(() => {
+            console.log({ totalLevel })
+            console.log({ totalSkill })
+            console.log({ totalXp })
+            console.log({ totalGrade })
+            createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
+            // for (let key in totalSkill){
+            //     if(skills.includes(key)){
+            //         console.log(totalSkill[key])
+            //     }
+            // }
+            // add javascript display functions here
+            // take off loading screen
+            setTimeout(() => createLoader(false), 5000)
         })
-    }).then(
-    // add javascript display functions here
-    // take off loading screen
-)
+}
+

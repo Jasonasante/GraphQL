@@ -1,0 +1,75 @@
+.other-container {
+    grid-area: other;
+}
+
+.other-container {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    border-radius: 50px;
+    border: 6px solid #171717;
+    flex-direction: column;
+    text-align: center;
+    color: orange;
+    overflow-y: scroll;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.other-title {
+    background-color: transparent;
+    margin-bottom: 10px;
+    color: rgb(228, 137, 0);
+}
+
+.info-button-container {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 10px;
+}
+
+.current-button {
+    height: 32px;
+    width: max-content;
+    border-radius: 10px;
+    font-size: large;
+    font-weight: bolder;
+    background-color: rgba(228, 137, 0);
+    color: whitesmoke;
+}
+
+.current-button:hover {
+    background-color: rgb(255, 169, 39)
+}
+
+.current-button:active {
+    background-color: rgba(228, 137, 0, 0.617)
+}
+
+
+
+
+.other-container>h2,
+.xp-info>h2,
+.grade-info>h2,
+.level-info>h2 {
+    background-color: transparent;
+    color: rgba(169, 169, 169, 0.509);
+    text-align: start;
+}
+
+.other-xp-title {
+    background-color: transparent;
+    color: rgba(228, 137, 0);
+    text-align: center;
+}
+
+.other-grade-title {
+    background-color: transparent;
+    color: rgba(228, 137, 0);
+    text-align: center;
+}
+
+.other-level-title {
+    background-color: transparent;
+    color: rgba(228, 137, 0);
+    text-align: center;
+}
