@@ -262,11 +262,11 @@ function getProgressData(Url) {
         })
 }
 
+// groups attributes of each project into an object
 function projectTransactions(transactionArr, progressArr) {
     progressArr.forEach(progress => {
         resultArr.push({ projectName: progress["object"]["name"] })
         let obj = resultArr.find(project => project.projectName === progress["object"]["name"])
-        // console.log( transactionArr.filter(transaction => transaction["object"]["name"] === progress["object"]["name"]))
         transactionArr.filter(transaction => transaction["object"]["name"] === progress["object"]["name"])
             .forEach(transaction => {
                 skills.forEach(skill => {
@@ -287,6 +287,7 @@ function projectTransactions(transactionArr, progressArr) {
     return resultArr
 }
 
+//obtain overall xp and grades data and place data into respective object
 function getTotalXpAndGrades(resultArr) {
     let totalX = 0
     let totalG = 0
@@ -319,17 +320,6 @@ function getTotalXpAndGrades(resultArr) {
     orderGrade.forEach(project => totalGrade["project-grades"].push(project))
 }
 
-// convert object values into percentage
-function getPercentage(object) {
-    let percentageValueObj = {}
-    for (let key in object) {
-        if (key != "total") {
-            percentageValueObj[key] = Math.round(((object[key] / object.total) + Number.EPSILON) * 100)
-        }
-    }
-    return percentageValueObj
-}
-
 window.onload = () => {
     // createLoader(true)
     getTransactionData(Url)
@@ -337,10 +327,7 @@ window.onload = () => {
             getTotalSkills()
             getLevels()
             return getProgressData(Url).then(() => {
-                // console.log(getPercentage(totalSkill))
-                // console.log({ progressArr })
                 getTotalXpAndGrades(projectTransactions(response, progressArr))
-                // console.log({ resultArr })
             })
 
         }).then(() => {
@@ -348,12 +335,8 @@ window.onload = () => {
             console.log({ totalSkill })
             console.log({ totalXp })
             console.log({ totalGrade })
+            console.log(Math.PI*10)
             createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
-            // for (let key in totalSkill){
-            //     if(skills.includes(key)){
-            //         console.log(totalSkill[key])
-            //     }
-            // }
             // add javascript display functions here
             // take off loading screen
             setTimeout(() => createLoader(false), 5000)

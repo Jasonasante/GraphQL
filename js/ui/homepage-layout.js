@@ -5,17 +5,13 @@ export function createHomepage(totalLevel, totalSkill, totalXp, totalGrade) {
     homepage.classList.add("homepage-container")
     document.body.appendChild(homepage)
 
-    displayHeader(homepage)
+    displayHeaderAndFooter(homepage)
     displayProjects(homepage, totalXp, totalSkill)
 
     const lineGraphsContainer = document.createElement('div')
     lineGraphsContainer.classList.add('line-graphs-container')
 
-    const skillsContainer = document.createElement('div')
-    skillsContainer.classList.add('skills-container')
-
-
-
+    displaySkills(homepage, totalSkill)
     displayOther(homepage, totalXp, totalGrade, totalLevel)
 
     const footer = document.createElement('div')
@@ -23,16 +19,9 @@ export function createHomepage(totalLevel, totalSkill, totalXp, totalGrade) {
     footer.classList.add('footer')
 
     homepage.appendChild(lineGraphsContainer)
-    homepage.appendChild(skillsContainer)
-    homepage.appendChild(footer)
-
-    const footerTitle = document.createElement('p')
-    footerTitle.classList.add('footer-title')
-    footerTitle.innerText = "Add Message"
-    footer.appendChild(footerTitle)
 }
 
-function displayHeader(homepage) {
+function displayHeaderAndFooter(homepage) {
     const header = document.createElement('div')
     header.classList.add('item')
     header.classList.add('header')
@@ -42,6 +31,16 @@ function displayHeader(homepage) {
     headerTitle.innerText = Username + " GraphQL"
     header.appendChild(headerTitle)
     homepage.appendChild(header)
+
+    const footer = document.createElement('div')
+    footer.classList.add('item')
+    footer.classList.add('footer')
+
+    const footerTitle = document.createElement('p')
+    footerTitle.classList.add('footer-title')
+    footerTitle.innerText = "Add Message"
+    footer.appendChild(footerTitle)
+    homepage.appendChild(footer)
 }
 
 function displayProjects(homepage, totalXp, totalSkill) {
@@ -258,3 +257,93 @@ function displayOther(homepage, totalXp, totalGrade, totalLevel) {
         infoDiv.appendChild(gradeInfoDiv)
     }
 }
+
+function displaySkills(homepage, totalSkill) {
+    const nsURI = "http://www.w3.org/2000/svg"
+    const skillsContainer = document.createElement('div')
+    skillsContainer.classList.add('skills-container')
+    homepage.appendChild(skillsContainer)
+
+    const skillsTitle = document.createElement('h1')
+    skillsTitle.classList.add('skills-title')
+    skillsTitle.innerText = " Skills"
+    skillsContainer.appendChild(skillsTitle)
+
+    const ChartContainer = document.createElement('div')
+    ChartContainer.classList.add('svg-chart')
+    skillsContainer.appendChild(ChartContainer)
+
+    const pieChartContainer = document.createElement('div')
+    pieChartContainer.classList.add('svg-pie-chart')
+    ChartContainer.appendChild(pieChartContainer)
+
+    const colorContainer = document.createElement('div')
+    colorContainer.classList.add('svg-pie-chart-color')
+    ChartContainer.appendChild(colorContainer)
+
+    const pieChart = document.createElementNS(nsURI, 'svg')
+    pieChart.setAttributeNS(null, "viewBox", "0 0 20 20")
+    pieChartContainer.appendChild(pieChart)
+
+
+    const r = 10
+    const circum = Math.round((Math.PI * r + Number.EPSILON) * 100) / 100
+
+    // const mainCircle = document.createElementNS(nsURI, 'circle')
+    // mainCircle.setAttributeNS(null, "r", r)
+    // mainCircle.setAttributeNS(null, "cx", r)
+    // mainCircle.setAttributeNS(null, "cy", r)
+    // mainCircle.setAttributeNS(null, "fill", "white")
+    // pieChart.appendChild(mainCircle)
+
+    let colorArr = []
+    let counter = 0
+    let offset = [0]
+    for (let key in totalSkill) {
+        if (key != 'total') {
+            colorArr.push({ skill: key, amount: totalSkill[key], color: randomColour() })
+        }
+    }
+
+    colorArr.forEach(skill => {
+        let percent = getPercentageValue(skill["amount"], totalSkill)
+        const fraction = document.createElementNS(nsURI, 'circle')
+        fraction.setAttributeNS(null, "class", skill["skill"])
+        fraction.setAttributeNS(null, "r", r / 2)
+        fraction.setAttributeNS(null, "cx", r)
+        fraction.setAttributeNS(null, "cy", r)
+        fraction.setAttributeNS(null, "fill", "transparent")
+        fraction.setAttributeNS(null, "stroke", skill["color"])
+        fraction.setAttributeNS(null, "stroke-width", r)
+        fraction.setAttributeNS(null, "stroke-dasharray", (percent * circum) / 100 + " " + circum)
+        fraction.setAttributeNS(null, "stroke-dashoffset", -offset[counter])
+        fraction.setAttributeNS(null, "transform", "rotate(-90) translate(-20)")
+        offset.push(offset[counter] + (percent * circum) / 100)
+        counter++
+        pieChart.appendChild(fraction)
+
+        const skillColor = document.createElement('p')
+        skillColor.innerHTML = skill["skill"].replace("skill_", "") + ":= " + skill["amount"]
+        skillColor.style.color = skill["color"]
+        colorContainer.appendChild(skillColor)
+
+        skillColor.addEventListener("mouseenter", () => {
+            skillColor.style.textShadow = "1px 1px 1px #fff, 1px 1px 1px #ccc"
+            fraction.setAttributeNS(null, "stroke", "#ccc")
+        })
+
+        skillColor.addEventListener("mouseleave", function () {
+            skillColor.style.textShadow = "none"
+            fraction.setAttributeNS(null, "stroke", skill["color"])
+        });
+
+    })
+
+
+}
+
+function getPercentageValue(amount, object) {
+    return Math.round(((amount / object.total) + Number.EPSILON) * 100)
+}
+
+const randomColour = () => `rgb(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)})`;
