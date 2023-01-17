@@ -315,13 +315,12 @@ function getTotalXpAndGrades(resultArr) {
     totalGrade["project-total"] = Number(orderGrade.reduce((total, num) => total + num.grade, 0).toFixed(2))
     totalGrade.max = orderGrade[0]
     totalGrade.min = orderGrade[orderGrade.length - 1]
-    // let orderByDate = projectsOnly.sort((a, b) => { return new Date(b[1]) - new Date(a[1]) })
     totalGrade["project-grades"] = []
     orderGrade.forEach(project => totalGrade["project-grades"].push(project))
 }
 
 window.onload = () => {
-    // createLoader(true)
+    createLoader(true)
     getTransactionData(Url)
         .then(response => {
             getTotalSkills()
@@ -329,16 +328,8 @@ window.onload = () => {
             return getProgressData(Url).then(() => {
                 getTotalXpAndGrades(projectTransactions(response, progressArr))
             })
-
         }).then(() => {
-            console.log({ totalLevel })
-            console.log({ totalSkill })
-            console.log({ totalXp })
-            console.log({ totalGrade })
-            console.log(Math.PI*10)
             createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
-            // add javascript display functions here
-            // take off loading screen
             setTimeout(() => createLoader(false), 5000)
         })
 }

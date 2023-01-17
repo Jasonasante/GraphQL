@@ -3,26 +3,34 @@
 }
 
 .other-container {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    box-shadow: 0 10px 20px rgb(0 0 0 / 19%), 0 6px 6px rgb(0 0 0 / 23%);
     border-radius: 50px;
     border: 6px solid #171717;
     flex-direction: column;
     text-align: center;
-    color: orange;
-    overflow-y: scroll;
+    display: flex;
     padding-left: 10px;
-    padding-bottom: 10px;
+    overflow: hidden;
+    height: 90%;
+}
+
+.other-info-container {
+    max-height: 80%;
+    overflow-y: scroll;
+    background-color: transparent;
+    width: 90%;
+    align-self: center;
 }
 
 /* width */
-.other-container::-webkit-scrollbar {
+.other-info-container::-webkit-scrollbar {
     width: 8px;
 }
 
 
 
 /* Track */
-.other-container::-webkit-scrollbar-track {
+.other-info-container::-webkit-scrollbar-track {
     margin-top: 20px;
     margin-bottom: 20px;
     background: transparent;
@@ -31,14 +39,14 @@
 }
 
 /* Handle */
-.other-container::-webkit-scrollbar-thumb {
+.other-info-container::-webkit-scrollbar-thumb {
     height: 10px;
     border-radius: 10px;
     background: rgba(228, 137, 0);
 }
 
 /* Handle on hover */
-.other-container::-webkit-scrollbar-thumb:hover {
+.other-info-container::-webkit-scrollbar-thumb:hover {
     background: rgba(228, 137, 0, 0.794);
 }
 
@@ -51,7 +59,7 @@
 .info-button-container {
     display: flex;
     justify-content: space-evenly;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .current-button {
@@ -77,7 +85,7 @@
 
 
 
-.other-container>h2,
+.other-info-container>h2,
 .xp-info>h2,
 .grade-info>h2,
 .level-info>h2 {
@@ -85,6 +93,7 @@
     color: rgba(169, 169, 169, 0.509);
     text-align: start;
     font-size: larger;
+    margin-bottom: 10px;
 }
 
 .other-xp-title,

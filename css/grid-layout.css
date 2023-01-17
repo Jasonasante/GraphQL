@@ -9,7 +9,7 @@
         "header header header"
         "projects line-graphs line-graphs"
         "projects skills other"
-        "footer footer footer";
+        "projects skills other";
 }
 
 .header {
@@ -32,7 +32,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-.item {
+.header {
     background-color: transparent;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
     color: #ffffff;
@@ -43,22 +43,9 @@ body {
     align-items: center;
     font-size: 18px;
     font-weight: bold;
-}
-
-.header {
-    background-color: transparent;
+    margin-top: 10px;
 }
 
 .header>.header-title {
     color: rgb(228, 137, 0);
-}
-
-.footer {
-    /* background-color: #6C52D9; */
-    background-image: linear-gradient(160deg, #f58d16 0%, #6c52d9 127%);
-}
-
-.footer>p {
-    background-color: transparent;
-    color: white;
 }

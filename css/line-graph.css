@@ -1,9 +1,11 @@
 .line-graphs-container {
   grid-area: line-graphs;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgb(0 0 0 / 19%), 0 6px 6px rgb(0 0 0 / 23%);
   border-radius: 50px;
   border: 6px solid #171717;
   flex-direction: column;
+  display: flex;
+  overflow: hidden;
   position: relative;
 }
 
@@ -11,6 +13,13 @@
   background-color: transparent;
   text-align: center;
   color: rgb(228, 137, 0);
+}
+
+.graph-container {
+  height: 80%;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
 }
 
 .graph-display-name {
@@ -66,7 +75,7 @@
 }
 
 .labels>text {
-  stroke: rgba(204, 204, 204, 0.773);
+  stroke: rgba(204, 204, 204, 0.6);
 }
 
 .label-title {
