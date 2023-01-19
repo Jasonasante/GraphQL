@@ -32,20 +32,7 @@ let jsProjectNames = [
 // add challenges
 
 let skills = [
-    "xp",
-    "skill_css",
-    "skill_go",
-    "skill_html",
-    "skill_front-end",
-    "skill_back-end",
-    "skill_algo",
-    "skill_prog",
-    "skill_js",
-    "skill_game",
-    "skill_docker",
-    "skill_sys-admin",
-    "skill_sql",
-    "skill_gql"
+    "xp"
 ]
 
 
@@ -204,7 +191,9 @@ function getTotalSkills() {
             } else {
                 totalSkillArr.forEach(skill => {
                     if (!totalSkill.hasOwnProperty(skill.type)) {
+                        skills.push(skill.type)
                         totalSkill[skill.type] = skill["amount"]
+
                     } else {
                         totalSkill[skill.type] += skill["amount"]
                     }
@@ -213,6 +202,7 @@ function getTotalSkills() {
                 for (let key in totalSkill) {
                     total += totalSkill[key]
                 }
+                console.log(skills)
                 totalSkill.total = total
             }
         })
