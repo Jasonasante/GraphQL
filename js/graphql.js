@@ -5,7 +5,7 @@ import { createSignInForm } from "./ui/signIn.js"
 const Url = "https://learn.01founders.co/api/graphql-engine/v1/graphql"
 export let ID = 546
 export let Username = "Jasonasante"
-let token
+let token = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NDYiLCJpYXQiOjE2OTI5MDM2MTMsImlwIjoiMTk0LjgyLjEzMi4xMjIsIDE3Mi4xOC4wLjIiLCJleHAiOjE2OTI5OTAwMTMsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWNhbXB1c2VzIjoie30iLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6IjU0NiIsIngtaGFzdXJhLXRva2VuLWlkIjoiNThiNmVkMTQtZjZlZS00OWYwLTkyZjQtNjBkMjJmYjQ4ZTcwIn19.DKKMa1fJuFIrhqAhhpRFkEjMuX9R3iWx-bBLd7ozuow`
 
 
 
@@ -29,7 +29,7 @@ let jsProjectNames = [
     "real-time-forum", "real-time-forum-typing-in-progress",
     "graphql",
     "social-network", "social-network-cross-platform-appimage",
-    "mini-framework", "mini-framework-bomberman-dom"
+    "mini-framework", "bomberman-dom"
 ]
 
 // add rust
@@ -235,7 +235,6 @@ function getTotalSkills() {
                 for (let key in totalSkill) {
                     total += totalSkill[key]
                 }
-                console.log(skills)
                 totalSkill.total = total
             }
         })
@@ -343,20 +342,7 @@ function getTotalXpAndGrades(resultArr) {
     orderGrade.forEach(project => totalGrade["project-grades"].push(project))
 }
 
-export function submitForm(evt) {
-    let credentials
-    if (evt.target.tagName === 'BUTTON') {
-        const password = process.env.PASSWORD;
-        credentials = `${Username}:${password}`;
-    } else {
-        evt.preventDefault()
-        const data = new FormData(evt.target);
-        const dataObj = Object.fromEntries(data)
-        credentials = `${dataObj.username}:${dataObj.password}`;
-    }
-    const encodedCredentials = btoa(credentials);
-
-    createLoader(true)
+function otherUsersGQL(encodedCredentials) {
     fetch("https://learn.01founders.co/api/auth/signin", {
         method: "POST",
         headers: {
@@ -377,6 +363,7 @@ export function submitForm(evt) {
 
             } else {
                 document.querySelector(".sign-in-container").remove()
+                console.log(response)
                 token = response
             }
 
@@ -391,13 +378,46 @@ export function submitForm(evt) {
                                 getTotalXpAndGrades(projectTransactions(response, progressArr))
                             })
                         }).then(() => {
-                            console.log(progressArr)
                             createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
                             setTimeout(() => createLoader(false), 5000)
                         })
                 })
         }
         )
+}
+
+function authorGQL() {
+    getTransactionData(Url)
+        .then(response => {
+            document.querySelector(".sign-in-container").remove()
+            getTotalSkills()
+            getLevels()
+            return getProgressData(Url).then(() => {
+                getTotalXpAndGrades(projectTransactions(response, progressArr))
+            })
+        }).then(() => {
+            createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
+            setTimeout(() => createLoader(false), 5000)
+        })
+
+}
+
+export function submitForm(evt) {
+    let credentials
+    createLoader(true)
+    if (evt.target.tagName === 'BUTTON') {
+        console.log()
+        authorGQL()
+    } else {
+        evt.preventDefault()
+        const data = new FormData(evt.target);
+        const dataObj = Object.fromEntries(data)
+        credentials = `${dataObj.username}:${dataObj.password}`;
+        const encodedCredentials = btoa(credentials);
+        otherUsersGQL(encodedCredentials)
+    }
+
+
 
 }
 

@@ -79,6 +79,7 @@ section {
 	font-size: 16px;
 	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 	color: white;
+	transition: ease-in-out 200ms
 }
 
 #SignInFormData>button {
@@ -88,7 +89,17 @@ section {
 	color: #fff;
 	cursor: pointer;
 	margin-top: 5px;
+	transition: ease-in-out 400ms
 }
+
+#SignInFormData>input:focus {
+	border: 1px solid rgb(228, 137, 0);
+}
+
+#SignInFormData>button:hover {
+	transform: scale(1.1);
+}
+
 
 #SignInFormData>form>span {
 	margin-left: 20px;
