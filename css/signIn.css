@@ -109,3 +109,8 @@ section {
 	font-size: 14px;
 	text-transform: lowercase;
 }
+
+.error-message {
+	background: transparent;
+	color: red;
+}
