@@ -4,6 +4,10 @@ import { createLoader } from "./ui/loader.js"
 const Url = "https://learn.01founders.co/api/graphql-engine/v1/graphql"
 export const ID = 546
 export const Username = "Jasonasante"
+let token
+
+
+
 let transactionOffset = 0
 let lvlOffset = 0
 let progressOffset = 0
@@ -58,6 +62,7 @@ export function getTransactionData(URL) {
     return fetch(URL, {
         method: "POST",
         headers: {
+            "Authorization": 'Bearer ' + token,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -103,6 +108,7 @@ function getLevels() {
     fetch("https://learn.01founders.co/api/graphql-engine/v1/graphql", {
         method: "POST",
         headers: {
+            "Authorization": 'Bearer ' + token,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -160,6 +166,7 @@ function getTotalSkills() {
     fetch("https://learn.01founders.co/api/graphql-engine/v1/graphql", {
         method: "POST",
         headers: {
+            "Authorization": 'Bearer ' + token,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -213,6 +220,7 @@ function getProgressData(Url) {
     return fetch(Url, {
         method: "POST",
         headers: {
+            "Authorization": 'Bearer ' + token,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -309,19 +317,66 @@ function getTotalXpAndGrades(resultArr) {
     orderGrade.forEach(project => totalGrade["project-grades"].push(project))
 }
 
-window.onload = () => {
+function submitForm(evt) {
+    console.log("here")
+    evt.preventDefault()
+    const data = new FormData(evt.target);
+    console.log({ data })
+    console.log(Object.fromEntries(formData))
+    const credentials = `${data.username}:${data.password}`;
+    const encodedCredentials = btoa(credentials);
     createLoader(true)
-    getTransactionData(Url)
+    fetch("https://learn.01founders.co/api/auth/signin", {
+        method: "POST",
+        headers: {
+            'Authorization': `Basic ${encodedCredentials}`,
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
         .then(response => {
-            getTotalSkills()
-            getLevels()
-            return getProgressData(Url).then(() => {
-                getTotalXpAndGrades(projectTransactions(response, progressArr))
-            })
+            console.log(response)
+            token = response
+
         }).then(() => {
-            console.log(progressArr)
-            createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
-            setTimeout(() => createLoader(false), 5000)
+            getTransactionData(Url)
+                .then(response => {
+                    getTotalSkills()
+                    getLevels()
+                    return getProgressData(Url).then(() => {
+                        getTotalXpAndGrades(projectTransactions(response, progressArr))
+                    })
+                }).then(() => {
+                    console.log(progressArr)
+                    createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
+                    setTimeout(() => createLoader(false), 5000)
+                })
         })
 }
+
+// window.onload = () => {
+document.body.innerHTML = `
+    <div class="sign-in-container">
+    <input type="radio" name="optionScreen" id="SignIn" hidden checked>    
+    <section class="sign-in-form">
+        <div id="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/2048px-GraphQL_Logo.svg.png" alt="GraphQL-Logo" width="50">
+            <h1>GraphQL</h1>
+        </div>
+        <nav>
+            <label for="SignIn">Sign In</label>
+        </nav>
+    
+        <form id="SignInFormData">
+            <input type="text" name="username" id="username" placeholder="Username or E-mail">
+            <input type="password" name"password" id="password" placeholder="Password">
+            <button type="button" title="Sign In">Sign In</button>
+        </form>
+    </section>
+    </div>
+    `
+let myform = document.querySelector("#SignInFormData");
+myform.addEventListener("submit", submitForm);
+console.log(myform)
+// }
 
