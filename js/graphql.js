@@ -5,8 +5,7 @@ import { createSignInForm } from "./ui/signIn.js"
 const Url = "https://learn.01founders.co/api/graphql-engine/v1/graphql"
 export let ID = 546
 export let Username = "Jasonasante"
-let token = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NDYiLCJpYXQiOjE2OTI5MDM2MTMsImlwIjoiMTk0LjgyLjEzMi4xMjIsIDE3Mi4xOC4wLjIiLCJleHAiOjE2OTI5OTAwMTMsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWNhbXB1c2VzIjoie30iLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6IjU0NiIsIngtaGFzdXJhLXRva2VuLWlkIjoiNThiNmVkMTQtZjZlZS00OWYwLTkyZjQtNjBkMjJmYjQ4ZTcwIn19.DKKMa1fJuFIrhqAhhpRFkEjMuX9R3iWx-bBLd7ozuow`
-
+let token
 
 
 let transactionOffset = 0
@@ -384,6 +383,8 @@ function otherUsersGQL(encodedCredentials) {
 }
 
 function authorGQL() {
+    token = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NDYiLCJpYXQiOjE2OTI5MDM2MTMsImlwIjoiMTk0LjgyLjEzMi4xMjIsIDE3Mi4xOC4wLjIiLCJleHAiOjE2OTI5OTAwMTMsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWNhbXB1c2VzIjoie30iLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6IjU0NiIsIngtaGFzdXJhLXRva2VuLWlkIjoiNThiNmVkMTQtZjZlZS00OWYwLTkyZjQtNjBkMjJmYjQ4ZTcwIn19.DKKMa1fJuFIrhqAhhpRFkEjMuX9R3iWx-bBLd7ozuow`
+
     getTransactionData(Url)
         .then(response => {
             document.querySelector(".sign-in-container").remove()
@@ -419,4 +420,3 @@ export function submitForm(evt) {
 }
 
 createSignInForm()
-
