@@ -75,10 +75,8 @@ export function getUserData(URL) {
     })
         .then(response => response.json())
         .then(response => {
-            console.log(response)
             ID = response["data"]["user"][0]["id"]
             Username = response["data"]["user"][0]["login"].charAt(0).toUpperCase() + response["data"]["user"][0]["login"].slice(1)
-            console.log(ID, Username)
             return ID, Username
         })
 }
@@ -363,7 +361,6 @@ function otherUsersGQL(encodedCredentials) {
 
             } else {
                 document.querySelector(".sign-in-container").remove()
-                console.log(response)
                 token = response
             }
 
