@@ -1,9 +1,10 @@
 import { createHomepage } from "./ui/homepage-layout.js"
 import { createLoader } from "./ui/loader.js"
+import { createSignInForm } from "./ui/signIn.js"
 
 const Url = "https://learn.01founders.co/api/graphql-engine/v1/graphql"
-export const ID = 546
-export const Username = "Jasonasante"
+export let ID = 546
+export let Username = "Jasonasante"
 let token
 
 
@@ -56,6 +57,31 @@ let totalSkill = {}
 let totalXp = {}
 let totalGrade = {}
 let totalLevel = {}
+export function getUserData(URL) {
+    return fetch(URL, {
+        method: "POST",
+        headers: {
+            "Authorization": 'Bearer ' + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            query: `query {
+                        user,{
+                            id
+                            login
+                        }
+                    }`,
+        })
+    })
+        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            ID = response["data"]["user"][0]["id"]
+            Username = response["data"]["user"][0]["login"].charAt(0).toUpperCase() + response["data"]["user"][0]["login"].slice(1)
+            console.log(ID, Username)
+            return ID, Username
+        })
+}
 
 // this function returns an array of all transactions bar levels
 export function getTransactionData(URL) {
@@ -317,14 +343,19 @@ function getTotalXpAndGrades(resultArr) {
     orderGrade.forEach(project => totalGrade["project-grades"].push(project))
 }
 
-function submitForm(evt) {
-    console.log("here")
-    evt.preventDefault()
-    const data = new FormData(evt.target);
-    console.log({ data })
-    console.log(Object.fromEntries(formData))
-    const credentials = `${data.username}:${data.password}`;
+export function submitForm(evt) {
+    let credentials
+    if (evt.target.tagName === 'BUTTON') {
+        const password = process.env.PASSWORD;
+        credentials = `${Username}:${password}`;
+    } else {
+        evt.preventDefault()
+        const data = new FormData(evt.target);
+        const dataObj = Object.fromEntries(data)
+        credentials = `${dataObj.username}:${dataObj.password}`;
+    }
     const encodedCredentials = btoa(credentials);
+
     createLoader(true)
     fetch("https://learn.01founders.co/api/auth/signin", {
         method: "POST",
@@ -335,48 +366,40 @@ function submitForm(evt) {
     })
         .then(response => response.json())
         .then(response => {
-            console.log(response)
-            token = response
+            if (response.error != null) {
+                const errorMessage = document.createElement("p")
+                errorMessage.classList.add("error-message")
+                errorMessage.innerHTML = "Failed To Find Account. Please Try Again"
+                if (document.querySelector(".error-message") == undefined) {
+                    document.querySelector("#SignInFormData").insertBefore(errorMessage, document.querySelector(".submit-sign-in"))
+                }
+                setTimeout(() => createLoader(false), 2000)
+
+            } else {
+                document.querySelector(".sign-in-container").remove()
+                token = response
+            }
 
         }).then(() => {
-            getTransactionData(Url)
-                .then(response => {
-                    getTotalSkills()
-                    getLevels()
-                    return getProgressData(Url).then(() => {
-                        getTotalXpAndGrades(projectTransactions(response, progressArr))
-                    })
-                }).then(() => {
-                    console.log(progressArr)
-                    createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
-                    setTimeout(() => createLoader(false), 5000)
+            getUserData(Url).then(
+                () => {
+                    getTransactionData(Url)
+                        .then(response => {
+                            getTotalSkills()
+                            getLevels()
+                            return getProgressData(Url).then(() => {
+                                getTotalXpAndGrades(projectTransactions(response, progressArr))
+                            })
+                        }).then(() => {
+                            console.log(progressArr)
+                            createHomepage(totalLevel, totalSkill, totalXp, totalGrade)
+                            setTimeout(() => createLoader(false), 5000)
+                        })
                 })
-        })
+        }
+        )
+
 }
 
-// window.onload = () => {
-document.body.innerHTML = `
-    <div class="sign-in-container">
-    <input type="radio" name="optionScreen" id="SignIn" hidden checked>    
-    <section class="sign-in-form">
-        <div id="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/GraphQL_Logo.svg/2048px-GraphQL_Logo.svg.png" alt="GraphQL-Logo" width="50">
-            <h1>GraphQL</h1>
-        </div>
-        <nav>
-            <label for="SignIn">Sign In</label>
-        </nav>
-    
-        <form id="SignInFormData">
-            <input type="text" name="username" id="username" placeholder="Username or E-mail">
-            <input type="password" name"password" id="password" placeholder="Password">
-            <button type="button" title="Sign In">Sign In</button>
-        </form>
-    </section>
-    </div>
-    `
-let myform = document.querySelector("#SignInFormData");
-myform.addEventListener("submit", submitForm);
-console.log(myform)
-// }
+createSignInForm()
 
