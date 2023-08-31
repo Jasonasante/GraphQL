@@ -360,6 +360,7 @@ function otherUsersGQL(encodedCredentials) {
 
             } else {
                 document.querySelector(".sign-in-container").remove()
+                console.log(response)
                 token = response
             }
 
@@ -383,7 +384,7 @@ function otherUsersGQL(encodedCredentials) {
 }
 
 function authorGQL() {
-    token = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NDYiLCJpYXQiOjE2OTI5MDM2MTMsImlwIjoiMTk0LjgyLjEzMi4xMjIsIDE3Mi4xOC4wLjIiLCJleHAiOjE2OTI5OTAwMTMsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWNhbXB1c2VzIjoie30iLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6IjU0NiIsIngtaGFzdXJhLXRva2VuLWlkIjoiNThiNmVkMTQtZjZlZS00OWYwLTkyZjQtNjBkMjJmYjQ4ZTcwIn19.DKKMa1fJuFIrhqAhhpRFkEjMuX9R3iWx-bBLd7ozuow`
+    token = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1NDYiLCJpYXQiOjE2OTM0OTEyODYsImlwIjoiMTk0LjgyLjEzMi4xMjIsIDE3Mi4xOC4wLjIiLCJleHAiOjE2OTM1Nzc2ODYsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtYWxsb3dlZC1yb2xlcyI6WyJ1c2VyIl0sIngtaGFzdXJhLWNhbXB1c2VzIjoie30iLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6IjU0NiIsIngtaGFzdXJhLXRva2VuLWlkIjoiY2ZlYzQwMTYtNWIwMC00ZmU4LTg4YTUtNjcxYmU5ZTA0ZmE3In19.G0TEe2uEtjtCRv5OsaQ7iVjJHTgOWHzM5ibB48EluRA`
 
     getTransactionData(Url)
         .then(response => {
@@ -401,23 +402,10 @@ function authorGQL() {
 }
 
 export function submitForm(evt) {
-    fetch("https://api.netlify.com/api/v1/accounts/jasonasante/env/login")
-            .then(response => response.json())
-            .then(response => {
-                console.log(response)
-                // credentials = response
-            })
     let credentials
     createLoader(true)
     if (evt.target.tagName === 'BUTTON') {
-        fetch("/api/v1/accounts/jasonasante/env/login")
-            .then(response => response.json())
-            .then(response => {
-                console.log(response)
-                credentials = response
-            })
-        const encodedCredentials = btoa(credentials);
-        otherUsersGQL(encodedCredentials)
+        authorGQL()
     } else {
         evt.preventDefault()
         const data = new FormData(evt.target);
