@@ -401,6 +401,12 @@ function authorGQL() {
 }
 
 export function submitForm(evt) {
+    fetch("https://api.netlify.com/api/v1/accounts/jasonasante/env/login")
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+                // credentials = response
+            })
     let credentials
     createLoader(true)
     if (evt.target.tagName === 'BUTTON') {
