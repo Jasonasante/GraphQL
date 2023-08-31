@@ -404,7 +404,7 @@ export function submitForm(evt) {
     let credentials
     createLoader(true)
     if (evt.target.tagName === 'BUTTON') {
-        fetch("https://app.netlify.com//api/v1/accounts/jasonasante/env/login")
+        fetch("https://app.netlify.com/api/v1/accounts/{account_slug}")
             .then(response => response.json())
             .then(response => {
                 console.log(response)
