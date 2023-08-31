@@ -404,7 +404,7 @@ export function submitForm(evt) {
     let credentials
     createLoader(true)
     if (evt.target.tagName === 'BUTTON') {
-        fetch("/api/v1/accounts/jasonasante")
+        fetch("/api/v1/accounts/jasonasante/env/login")
             .then(response => response.json())
             .then(response => {
                 console.log(response)
