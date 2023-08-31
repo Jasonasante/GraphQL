@@ -404,8 +404,9 @@ export function submitForm(evt) {
     let credentials
     createLoader(true)
     if (evt.target.tagName === 'BUTTON') {
-        console.log()
-        authorGQL()
+        credentials=process.env.login
+        const encodedCredentials = btoa(credentials);
+        otherUsersGQL(encodedCredentials)
     } else {
         evt.preventDefault()
         const data = new FormData(evt.target);
